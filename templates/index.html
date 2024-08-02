@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {% block head%}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% block title %}<title>Home Page</title>{% endblock %}
+    <link rel="stylesheet" href="{{url_for('static',filename='css/bootstrap.min.css')}}">
+    <link rel="icon" href="{{url_for('static',filename='image.png')}}">
+  {% endblock %}  
+</head>
+<body>
+{% block body %}
+    <div class="container">
+        <center>
+            <h1>Student Data Management</h1>
+        </center>
+    </div>
+    <div class="container">
+        <h2>Student List 
+            <a href="/insert" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">Add Student Data</a>
+        </h2>
+    
+    {% with messages=get_flashed_messages()%}
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-success alert-dismissable" role="alert">
+      {{message}}
+        <button type="button pull-right" class="close" data-bs-dismiss="alert" aria-label="close">
+            <span aria-hidden="true">x</span>
+        </button>
+        
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+    </div>
+   <div class="container">
+    <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">ID</th>
+            <th scope="col">NAME</th>
+            <th scope="col">Contact NO</th>
+            <th scope="col">Email</th>
+            <th scope="col">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for row in data %}
+          <tr>
+            <td>{{row.0}}</td>
+            <td>{{row.1}}</td>
+            <td>{{row.2}}</td>
+            <td>{{row.3}}</td>
+            <td>
+               <a href="/update/{{row.0}}" class="btn btn-warning btn-xs" data-bs-toggle="modal" data-bs-target="#exampleModaledit{{row.0}}">Edit</a>
+               <a href="/delete/{{row.0}}" class="btn btn-danger btn-xs" onclick= "return confirm ('Are you sure want to delete')">Delete</a>
+            </td>   
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="exampleModalLabel">Please Insert Data..</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+               <form action="{{url_for('insert')}}" method="POST">
+                 <label>Name</label>
+                 <p><input type="text" name="nm" required="1"></p>
+                 <label>Contact No</label>
+                 <p><input type="number" name="number" required="1"></p>
+                 <label>Email</label>
+                 <p><input type="email" name="email" required="1"></p>
+                 <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Insert Data</button>
+               </form>
+            </div>
+            <div class="modal-footer">
+             
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% for row in data %} 
+      <div class="modal fade" id="exampleModaledit{{row.0}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="exampleModallabel">Please Update Data..</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form action="{{url_for('update')}}" method="POST">
+                
+                <label>Name</label>
+                <input type="hidden" name="id" value="{{row.0}}">
+                <p><input type="text" name="nm" value="{{row.1}}"></p>
+                <label>Contact No</label>
+                <p><input type="number" name="number" value="{{row.2}}"></p>
+                <label>Email</label>
+                <p><input type="email" name="email" value="{{row.3}}"></p>
+                <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Update Data</button>
+              </form>
+           </div>
+           <div class="modal-footer">
+            
+             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+           </div>
+         </div>
+       </div>
+     </div> 
+    {% endfor %}       
+{% endblock %}   
+</body>
+   <script type="text/javascript" src="{{url_for('static',filename='bootstrap.min.js')}}"></script>
+   <script type="text/javascript" src="{{url_for('static',filename='js/jquery-3.2.1.min.js')}}"></script>
+</html>
